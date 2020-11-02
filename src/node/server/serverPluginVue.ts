@@ -454,12 +454,16 @@ async function compileSFCMain(
   if (script) {
     content = script.content
     map = script.map
-    if (script.lang === 'ts') {
-      const res = await transform(content, publicPath, {
-        loader: 'ts'
-      })
-      content = res.code
-      map = mergeSourceMap(map, JSON.parse(res.map!))
+    const lang = script.lang||'js';
+    switch(lang){
+      case 'ts': case 'js':{
+        const res = await esbuildService_1.transform(content, publicPath, {
+          loader: lang
+        });
+        content = res.code;
+        map = serverPluginSourceMap_1.mergeSourceMap(map, JSON.parse(res.map));
+        break;
+      }
     }
   }
 
